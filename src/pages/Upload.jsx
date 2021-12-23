@@ -2,12 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 // import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { useForm } from 'react-hook-form';
 // import { Link } from 'react-router-dom'
-import { auth, db, doc, addDoc, collection } from '../config/firebase';
+import { auth, onAuthStateChanged, db, addDoc, collection } from '../config/firebase';
 import swal from 'sweetalert';
 import LoadingButton from '@mui/lab/LoadingButton';
 import papa from 'papaparse';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const Upload = () => {
 
@@ -44,30 +44,26 @@ const Upload = () => {
 
 
 
-
-        // addDoc(collection(db, "sku"), {
-        //     asin: data.asin,
-        //     fnsku: data.fnsku,
-        //     sku: data.sku,
-        //     title: data.title,
-        //     imageUrl: ""
-        // })
-        //     .then(() => {
-        //         swal("Product Added Successfully");
-        //         setDisBtn(false);
-        //         reset();
-        //     })
-        //     .catch(err => {
-        //         console.log(err.message);
-        //         setDisBtn(false);
-
-        //     })
     }
 
     const handleFile = (e) => {
 
+        const csvFilePath = e.target.files[0];
+
+        papa.parse(csvFilePath, {
+            header: true,
+            dynamicTyping: true,
+            skipEmptyLines: true,
+            complete(result) {
+                // setData(result.data);
+
+                console.log(data);
+            }
+        })
+
         if (e.target.files[0].type !== "application/vnd.ms-excel") {
             console.log("CSV file nae hai");
+            alert("Select CSV file only");
         }
         else {
 
@@ -82,9 +78,21 @@ const Upload = () => {
 
                 }
             })
-
-
         }
+    }
+
+    React.useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+
+            } else {
+                navigate('/login');
+            }
+        });
+    })
+
+    const gotoBack = () => {
+        navigate('/')
     }
 
     return (
@@ -92,6 +100,7 @@ const Upload = () => {
             <div className="row" style={{ marginTop: '100px' }}>
                 <div className="col-lg-8 col-md-8 col-sm-10 col-10 mx-auto border rounded shadow p-4">
                     <h2 className="text-center fw-bold">Add Item</h2>
+                    <Button type="submit" onClick={gotoBack} startIcon={<ArrowBackIcon />} variant="contained">Back</Button>
                     <form className="mt-5" onSubmit={onSubmit}>
 
                         <div className="mb-3">

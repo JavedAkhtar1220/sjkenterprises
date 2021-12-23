@@ -23,3 +23,23 @@ body {
   border-radius: 20px;
   margin-bottom: 0px;
 }
+
+.result-box {
+  padding: 5px 20px;
+  border: 2px solid rgb(107, 103, 103);
+  border-radius: 20px;
+  text-align: center;
+}
+
+.loader {
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5));
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}

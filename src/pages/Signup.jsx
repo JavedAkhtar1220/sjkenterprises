@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { auth, createUserWithEmailAndPassword, db, doc, setDoc, } from '../config/firebase';
@@ -16,12 +17,13 @@ const Signup = () => {
         watch
     } = useForm();
     const navigate = useNavigate();
+    const [disBtn, setDisBtn] = React.useState(false);
 
     const password = useRef({});
     password.current = watch("password", "");
 
     const onSubmit = (data) => {
-
+        setDisBtn(true);
         createUserWithEmailAndPassword(auth, data.email, data.password)
             .then((userCredential) => {
 
@@ -38,6 +40,7 @@ const Signup = () => {
             })
             .catch(err => {
                 swal("Error!", err.code + "!", "error");
+                setDisBtn(false);
             })
     }
 
@@ -121,7 +124,10 @@ const Signup = () => {
                             />
                             {errors.confirmPassword && <p className="small text-danger">{errors.confirmPassword.message}</p>}
                         </div>
-                        <Button size="large" type="submit" fullWidth variant="contained">Signup</Button>
+                        {disBtn ? <LoadingButton loading fullWidth loadingIndicator="Signup..." variant="outlined">
+                            Fetch data
+                        </LoadingButton> : <Button size="large" type="submit" fullWidth variant="contained">Signup</Button>}
+
                         <p className="text-end my-3">Already have an account? <Link to="/login">login here!</Link></p>
                     </form>
                 </div>

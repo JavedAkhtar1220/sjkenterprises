@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom'
 import { auth, signInWithEmailAndPassword } from '../config/firebase';
@@ -16,14 +17,17 @@ const Login = () => {
         handleSubmit,
         formState: { errors },
     } = useForm();
+    const [btnDis, setBtnDis] = React.useState(false);
     const navigate = useNavigate();
 
     const onSubmit = (data) => {
+        setBtnDis(true);
         signInWithEmailAndPassword(auth, data.email, data.password)
             .then(() => {
                 navigate('/');
             })
             .catch(err => {
+                setBtnDis(false);
                 swal("Error!", err.code + "!", "error");
             })
     }
@@ -55,7 +59,11 @@ const Login = () => {
                             />
                             {errors.password && <p className="small text-danger">Password is required.</p>}
                         </div>
-                        <Button size="large" type="submit" fullWidth variant="contained">Login</Button>
+
+                        {btnDis ? <LoadingButton loading fullWidth loadingIndicator="Loging..." variant="outlined">
+                            Fetch data
+                        </LoadingButton> : <Button size="large" type="submit" fullWidth variant="contained">Login</Button>}
+
                         <p className="text-end my-3">Don't have account? <Link to="/signup">Sign up here!</Link></p>
                     </form>
                 </div>
